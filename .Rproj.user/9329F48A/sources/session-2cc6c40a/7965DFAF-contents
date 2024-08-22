@@ -1,0 +1,405 @@
+---
+title: <B> Análise de Jogadores da NBA (1996 - 2021) </B>
+subtitle: <I> Trabalho Estatística Descritiva </I>
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+    number_sections: TRUE
+---
+
+```{=html}
+<style type="text/css">
+   .main-container {max-width: 100%;}
+   .row {display: flex;}
+   .column {flex: 50%;}
+</style>
+```
+<B>Autores: </B> Davi Augusto, Felipe Hedlund e João Arend.
+
+<hr>
+
+```{r, echo=FALSE, out.width = "70%",fig.align = "center"}
+
+knitr::include_graphics("NBA-Transparent-PNG.png")
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+#
+setwd("/cloud/project")
+
+# Pacotes instaladaos para o trabalho
+# install.packages("tidyverse")
+# install.packages("ggplot2")
+# install.packages("dyplr")
+# install.packages("plotly")
+# install.packages("magick")
+# install.packages("gridExtra")
+# install.packages("knitr")
+
+# Chamando os pacotes que instalamos
+library(readxl)
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+library(plotly)
+library(knitr)
+library(magick)
+library(gridExtra)
+
+## Lendo o dataset 
+nba_dataset <- read_csv("all_seasons.csv")
+
+```
+
+# Objetivo de pesquisa
+
+Analisar os jogadores da NBA.
+
+O intuito inicial de nossa pesquisa era analisar o desempenho e impacto dos jogadores de basquete ao longo das últimas duas décadas (1996-2021), buscando compreender as mudanças nas tendências em relação às evoluções na filosofia do jogo e nas estratégias de desenvolvimento. Contudo, à medida que adquirimos e examinamos os dados, as médias e o desempenho de LeBron James emergiram com destaque, capturando nossa atenção de forma marcante.
+
+Diante das evidências do impacto extraordinário de LeBron James no esporte, decidimos expandir nossa análise. Além de avaliar o desempenho e impacto dos demais jogadores, nos dedicamos a compará-los com a grandiosidade de LeBron James, reconhecido estatisticamente como um dos maiores jogadores de todos os tempos. Essa nova abordagem enriqueceu significativamente nossas descobertas e proporcionou uma perspectiva mais completa sobre as trajetórias de carreira dos jogadores ao longo dessas últimas duas décadas.
+
+# Sobre os dados
+
+O conjunto de dados contém mais de duas décadas de informações sobre cada jogador que fez parte do elenco de equipes da NBA. Ele inclui variáveis demográficas como idade, altura, peso e local de nascimento, detalhes biográficos como o time em que jogou, ano e rodada do draft. Além disso, possui estatísticas básicas de pontuação, como número médio de jogos disputados, pontos, rebotes, assistências, etc.
+
+'' Verificar se isso fica...\
+player_name: qualitativa nominal
+
+team_abbreviation: qualitativa nominal
+
+age: quantitativa continua
+
+player_height: quantitativa continua
+
+player_weight: quantitativa continua
+
+college: qualitativa nominal
+
+country: qualitativa nominal
+
+draft_year: quantitativa continua
+
+draft_round: quantitativa discreta
+
+draft_number: quantitativa discreta
+
+gp: quantitativa discreta
+
+pts: quantitativa continua
+
+reb: quantitativa continua
+
+ast: quantitativa continua
+
+net_rating: quantitativa continua
+
+oreb_pct: quantitativa continua
+
+dreb_pct: quantitativa continua
+
+usg_pct: quantitativa continua
+
+ts_pct: quantitativa continua
+
+ast_pct: quantitativa continua
+
+season: quantitativa continua
+
+## Código e organização dos dados
+
+Esta parte do código esta sendo utilizada e reservada para organização de variáveis como a criação de novas para o intuito de pesquisa e utilização do dataset para as análises
+
+```{r}
+
+## Realizando as mudanças necessárias
+
+# retirando a primeira coluna que serve de numeração para ID
+nba_dataset <- nba_dataset[, -1]
+
+## Adicionando uma nova coluna 'year' extraindo o ano da coluna 'season'.
+nba_dataset$year <- as.integer(substring(nba_dataset$season, 1, 4))
+
+## Novas colunas <-  jogos jogados * média de pontos/rebotes/assist
+nba_dataset <- nba_dataset %>%
+  mutate(pts_gp = as.integer(gp * pts),
+         reb_gp = as.integer(gp * reb),
+         ast_gp = as.integer(gp * ast))
+
+# Soma os stats de todas as temporadas por jogador
+nba_dataset <- nba_dataset %>%
+    group_by(player_name) %>%
+    mutate(total_pts = cumsum(pts_gp),
+           total_reb = cumsum(reb_gp),
+           total_ast = cumsum(ast_gp),
+           total_gp  = cumsum(gp), 
+           total_pts_gp = total_pts/total_gp, 
+           total_reb_gp = total_reb/total_gp,
+           total_ast_gp = total_ast/total_gp)
+
+# Número dos top pontuadores da NBA
+NumTopScorers <- 10
+
+# Calcula a soma de pontos para cada jogador e ordena o resultado em ordem decrescente.
+top_scorers <- nba_dataset %>%
+  arrange(desc(total_pts)) %>%
+  distinct(player_name, .keep_all = TRUE) %>%
+  group_by(player_name) %>%
+  filter(row_number(desc(total_pts)) == 1)
+
+
+```
+
+# Tabela Maiores Pontuadores
+
+Tabela dos top 10 maiores pontuadores da NBA de 1996-2022:
+
+```{r, echo = FALSE}
+
+knitr::kable(head(top_scorers[order(-top_scorers$total_pts),  
+                  c("player_name",
+                    "age",
+                    "total_gp",
+                    "total_pts",
+                    "total_pts_gp", 
+                    "total_reb",
+                    "total_ast",
+                    "season")], 
+                  NumTopScorers), 
+             col.names = c("Nome",
+                           "Idade",
+                           "Número de Jogos",
+                           "Pontos",
+                           "Pontos/Jogo" ,
+                           "Rebotes", 
+                           "Assist",
+                           "Última Temporada"),
+             align = c("l", "c", "c","c","c","c","c", "c")
+)
+
+```
+
+# Tabela Mariores Pontuadores por jogo
+
+Tabela dos jogadores com maior razão de pontos por jogo:
+
+```{r, echo = FALSE}
+
+knitr::kable(head(top_scorers[order(-top_scorers$total_pts_gp),  
+                  c("player_name",
+                    "age",
+                    "total_gp",
+                    "total_pts",
+                    "total_pts_gp", 
+                    "total_reb", 
+                    "total_ast",
+                    "season")], 
+                  NumTopScorers), 
+             col.names = c("Nome",
+                           "Idade",
+                           "Número de Jogos",
+                           "Pontos",
+                           "Pontos/Jogo ",
+                           "Rebotes",
+                           "Assist",
+                           "Última Temporada"), 
+             align = c("l", "c", "c","c","c","c","c", "c" )
+)
+
+```
+
+<BR><BR>
+
+```{r}
+
+# 
+ggplot(top_scorers, aes(x = total_pts_gp)) +
+           geom_histogram(binwidth = 0.5 , fill = "#17408B", alpha = 0.7) +
+           labs(title = "Distribuição média pontos por jogo", 
+                x = "Pontos por jogo", 
+                y = "Frequência")
+
+summary(top_scorers$total_pts_gp)
+
+
+```
+
+<BR><BR>
+
+# Participação em quadra
+
+Na curiosidade de descobrir quem é o jogador com o maior total de pontos da liga no período de 1996-2021 me veio a idéia "pontuar, legal, mas e quanto as outras qualidades?" Então fizemos este gráfico com o intuito de mostrar o quão aparente são as outras qualidades destes grandes pontuadores
+
+```{css, echo = FALSE}
+.center {
+  display: table;
+  margin-right: auto;
+  margin-left: auto;
+}
+```
+
+::: center
+```{r, warning = FALSE}
+
+# Especificando o nome para as colunas de eixo_x e y, bubble size e texto
+x_axis        <- 'total_ast'
+y_axis        <- 'total_reb'
+bubble_column <- 'name'
+size_column   <- 'total_pts'
+text_column   <- "player_name"
+
+# Criando os plots utilizandoo bubblechart
+figure <- plot_ly(data = head(top_scorers, NumTopScorers), 
+                  x    = ~get(x_axis), 
+                  y    = ~get(y_axis), 
+                  text   = ~paste(get(text_column)),
+                  marker = list(size = ~get(size_column) * 0.002, opacity = 0.2, color = '#17408B'),
+                  type   = "scatter",
+                  mode   =  "markers",
+                  hoverinfo = "marker",
+                  textfont  = list(size = 10))
+
+# Seta os eixos e os bar titles
+figure <- figure %>% 
+          layout(xaxis = list(title = "Total de Assitências"), 
+                 yaxis = list(title = "Total de Rebotes"),
+                 title = "Assistências e Rebotes dos maiores pontuadores da liga")
+
+# Mostar o plot
+figure
+
+```
+:::
+
+```{r, warning = FALSE}
+
+# Especificando o nome para as colunas de eixo_x e y, bubble size e texto
+
+x_axis        <- 'total_ast'
+y_axis        <- 'total_pts'
+bubble_column <- 'name'
+size_column   <- 'total_reb'
+text_column   <- "player_name"
+
+# Criando os plots utilizandoo bubblechart
+figure <- plot_ly(data = top_scorers, 
+                  x    = ~get(x_axis), 
+                  y    = ~get(y_axis), 
+                  text   = ~paste(get(text_column)),
+                  marker = list(size = ~get(size_column) * 0.02, opacity = 0.2, color = '#17408B'),
+                  type   = "scatter",
+                  mode   =  "markers", 
+                  size   = ~get(y_axis))
+
+# Seta os eixos e os bar titles
+figure <- figure %>% 
+          layout(xaxis = list(title = "Total de Assistêcias"), 
+                 yaxis = list(title = "Total de Pontos"),
+                 title = "Pontos e Assistências dos maiores pontuadores da liga")
+
+# Mostar o plot
+figure
+
+```
+
+<BR><BR>
+
+# Médias de pontuações, rebotes e assitências comparadas ao longo do tempo.
+
+Ao notar o grande equilibrio e certo destaque do nosso grande pontuador LeBron James foi natural que comparássemos suas médias com as de outros jogadores presentes no top 10 pontuadores, então, foi realizada a média dos top 3 maiores jogadores da tabela no caso: LeBron James, Kobre Bryant e Dirk Nowitzki.
+
+```{r}
+#out.width = "70%"
+# Filtrando banco por jogadores
+lebron_data <- subset(nba_dataset, player_name == "LeBron James")
+kobe_data   <- subset(nba_dataset, player_name == "Kobe Bryant")
+dirk_data   <- subset(nba_dataset, player_name == "Dirk Nowitzki")
+
+#################
+### GRÁFICO 1 ###
+#################
+
+#Médias LeBron
+lebron_averages <- ggplot(lebron_data, aes(x = year)) +
+                   geom_line(aes(y = pts, color = "Points"),   linewidth = 1.5) +
+                   geom_line(aes(y = reb, color = "Rebounds"), linewidth = 1.5) +
+                   geom_line(aes(y = ast, color = "Assists"),  linewidth = 1.5) +
+                   labs(title = "LeBron James Média-Pontos Por Temporada",
+                        x = "Temporadas(anos)",
+                        y = "Médias",
+                        color = "Stats") +
+                   theme_minimal() +
+                   scale_color_manual(values = c("Points" = "lightblue", 
+                                                 "Rebounds" = "orange", 
+                                                 "Assists" = "lightgreen")) +
+                   expand_limits(y=c(0,40))
+
+#################
+### GRÁFICO 2 ###
+#################
+
+# Médias Kobe
+kobe_averanges <- ggplot(kobe_data, aes(x = year)) +
+                  geom_line(aes(y = pts, color = "Points"), linewidth = 1.5) +
+                  geom_line(aes(y = reb, color = "Rebounds"), linewidth = 1.5) +
+                  geom_line(aes(y = ast, color = "Assists"), linewidth = 1.5) +
+                  labs(title = "Kobe Bryant Média-Pontos Por Temporada",
+                       x = "Temporadas(anos)",
+                       y = "Médias",
+                      color = "Stats") +
+                  theme_minimal() +
+                  scale_color_manual(values = c("Points" = "lightblue",
+                                                "Rebounds" = "orange", 
+                                                "Assists" = "lightgreen")) + 
+                  expand_limits(y=c(0,40))
+
+#################
+### GRÁFICO 3 ###
+#################
+
+# Médias Dirk
+dirk_averages <- ggplot(dirk_data, aes(x = year)) +
+                 geom_line(aes(y = pts, color = "Points"),   linewidth = 1.5) +
+                 geom_line(aes(y = reb, color = "Rebounds"), linewidth = 1.5) +
+                 geom_line(aes(y = ast, color = "Assists"),  linewidth = 1.5) +
+                 labs(title = "Dirk Nowitzki Média-Pontos Por Temporada",
+                      x = "Temporadas(anos)",
+                      y = "Médias",
+                      color = "Stats") +
+                 theme_minimal() +
+                 scale_color_manual(values = c("Points" = "lightblue", 
+                                               "Rebounds" = "orange", 
+                                               "Assists" = "lightgreen")) +
+                 expand_limits(y=c(0,40))
+
+```
+
+::: row
+::: column
+```{r, fig.align = "center", echo=FALSE}
+dirk_averages
+```
+:::
+
+::: column
+```{r, fig.align = "center", echo=FALSE}
+kobe_averanges
+```
+:::
+:::
+
+```{r, fig.align = "center", echo=FALSE}
+lebron_averages
+```
+
+# Conclusão sobre o King James(LeBron)
+
+Concluímos que LeBron James é o jogador matematicamente mais forte da liga nesse período, comparando suas médias altíssimas das estatísticas, seu desempenho em quadra e os seus totais nesse período de 20 anos em que o jogador esteve na ativa. 
+
+```{r, echo=FALSE, out.width = "70%",fig.align = "center"}
+knitr::include_graphics("lebron-james-lebron.gif")
+```

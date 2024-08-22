@@ -1,0 +1,11 @@
+"0","nba_dataset <- read_csv(""data/all_seasons.csv"")
+"
+"2","New names:"
+"2","[1mRows: [22m[34m12305[39m [1mColumns: [22m[34m22[39m"
+"2","[36m──[39m [1mColumn specification[22m [36m────────────────────────────────────────────────────────────[39m
+[1mDelimiter:[22m "",""
+[31mchr[39m  (8): player_name, team_abbreviation, college, country, draft_year, draft_ro...
+[32mdbl[39m (14): ...1, age, player_height, player_weight, gp, pts, reb, ast, net_rating..."
+"2","
+[36mℹ[39m Use `spec()` to retrieve the full column specification for this data.
+[36mℹ[39m Specify the column types or set `show_col_types = FALSE` to quiet this message."

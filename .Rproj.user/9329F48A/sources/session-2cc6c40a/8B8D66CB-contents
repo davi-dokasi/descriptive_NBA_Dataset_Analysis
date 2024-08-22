@@ -1,0 +1,28 @@
+## Realizando os imports das librarys que vamos utilizar
+install.packages("readxl")
+install.packages("tidyverse")
+install.packages("ggplot2")
+#
+library(readxl)
+library(tidyverse)
+library(ggplot2)
+
+## Lendo o dataset e realizando as mudanças necessárias
+nba_dataset <- read_csv("data/all_seasons.csv")
+# Dropando a primeira coluna do dataset onde só contem a númeração de 1 a n
+nba_dataset <- nba_dataset[, -1]
+## Dataset com informações do Lebrão James
+papai_lebrao <- subset(nba_dataset, player_name == "LeBron James")
+
+## Adicionando uma nova coluna 'year' extraindo o ano da coluna 'season'.
+nba_dataset$year <- as.integer(substring(nba_dataset$season, 1, 4))
+nba_dataset
+summarise(nba_dataset = n())
+
+nba_dataset %>%
+  filter(player_name == "LeBron James") %>%
+  group_by(season) %>%
+  summarise(pontuação_média = n(pts)) %>%
+  ggplot() +
+  geom_line(aes(x = season, y=pts))
+  geom_point(aes(x = season, y=pts))
