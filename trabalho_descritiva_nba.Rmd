@@ -25,7 +25,6 @@ output:
 ## database ##
 # https://www.kaggle.com/datasets/justinas/nba-players-data?select=all_seasons.csv
 
-
 library(rmarkdown)
 library(readxl)
 library(tidyverse)
@@ -143,7 +142,6 @@ knitr::kable(head(top_scorers[order(-top_scorers$total_pts), col_dt],
 
 ```
 
-# Tabela Maiores Pontuadores por jogo
 # Tabela Maiores Pontuadores por jogo
 
 Tabela dos jogadores com maior razão de pontos por jogo:
