@@ -17,7 +17,6 @@ output:
 </style>
 ```
 <B>Autores: </B> Davi Augusto e João Arend.
-<B>Autores: </B> Davi Augusto e João Arend.
 
 <hr>
 
