@@ -16,7 +16,7 @@ output:
    .column {flex: 50%;}
 </style>
 ```
-<B>Autores: </B> Davi Augusto, Felipe Hedlund e João Arend.
+<B>Autores: </B> Davi Augusto e João Arend.
 
 <hr>
 
@@ -263,7 +263,7 @@ figure
 
 <BR><BR>
 
-# Médias de pontuações, rebotes e assitências comparadas ao longo do tempo.
+# Médias de pontuações, rebotes e assistências comparadas ao longo do tempo.
 
 Ao notar o grande equilibrio e certo destaque do nosso grande pontuador LeBron James foi natural que comparássemos suas médias com as de outros jogadores presentes no top 10 pontuadores, então, foi realizada a média dos top 3 maiores jogadores da tabela no caso: LeBron James, Kobre Bryant e Dirk Nowitzki.
 
@@ -283,7 +283,7 @@ lebron_averages <- ggplot(lebron_data, aes(x = year)) +
   geom_line(aes(y = pts, color = "Points"),   linewidth = 1.5) +
   geom_line(aes(y = reb, color = "Rebounds"), linewidth = 1.5) +
   geom_line(aes(y = ast, color = "Assists"),  linewidth = 1.5) +
-  labs(title = "LeBron James Média-Pontos Por Temporada",
+  labs(title = "LeBron James Médias Por Temporada",
        x     = "Temporadas(anos)",
        y     = "Médias",
        color = "Stats") +
@@ -302,7 +302,7 @@ kobe_averages <- ggplot(kobe_data, aes(x = year)) +
   geom_line(aes(y = pts, color = "Points"),   linewidth = 1.5) +
   geom_line(aes(y = reb, color = "Rebounds"), linewidth = 1.5) +
   geom_line(aes(y = ast, color = "Assists"),  linewidth = 1.5) +
-  labs(title = "Kobe Bryant Média-Pontos Por Temporada",
+  labs(title = "Kobe Bryant Médias Por Temporada",
        x     = "Temporadas(anos)",
        y     = "Médias",
        color = "Stats") +
@@ -321,7 +321,7 @@ dirk_averages <- ggplot(dirk_data, aes(x = year)) +
   geom_line(aes(y = pts, color = "Points"),   linewidth = 1.5) +
   geom_line(aes(y = reb, color = "Rebounds"), linewidth = 1.5) +
   geom_line(aes(y = ast, color = "Assists"),  linewidth = 1.5) +
-  labs(title = "Dirk Nowitzki Média-Pontos Por Temporada",
+  labs(title = "Dirk Nowitzki Médias Por Temporada",
        x     = "Temporadas(anos)",
        y     = "Médias",
        color = "Stats") +
@@ -354,7 +354,7 @@ kobe_averages
 lebron_averages
 ```
 
-# Conclusão sobre o King James(LeBron)
+# Conclusão sobre o King James
 
 Em suma, nossa pesquisa analítica nos permitiu uma jornada fascinante pelo mundo do basquete nas últimas duas décadas (1996-2021). Ao investigarmos o desempenho e o impacto dos jogadores, inicialmente focados nas tendências de idade, altura e peso, nos deparamos com uma verdadeira lenda do esporte: LeBron James.
 
