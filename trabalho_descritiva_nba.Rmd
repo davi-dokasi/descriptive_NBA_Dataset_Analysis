@@ -16,7 +16,7 @@ output:
    .column {flex: 50%;}
 </style>
 ```
-<B>Autores: </B> Davi Augusto, Felipe Hedlund e João Arend.
+<B>Autores: </B> Davi Augusto e João Arend.
 
 <hr>
 
@@ -24,7 +24,6 @@ output:
 ## BANCO DE DADOS UTILIZADO NO PROEJTO https://www.kaggle.com/datasets/justinas/nba-players-data?select=all_seasons.csv
 
 #getwd() # COMANDO PARA ACHAR O PATH RELACIONADO
-setwd("nba_trabalho")
 
 # Pacotes instaladaos para o trabalho
 # install.packages("tidyverse")
@@ -188,7 +187,7 @@ knitr::kable(head(top_scorers[order(-top_scorers$total_pts),
 
 ```
 
-# Tabela Mariores Pontuadores por jogo
+# Tabela Maiores Pontuadores por jogo
 
 Tabela dos jogadores com maior razão de pontos por jogo:
 
@@ -421,7 +420,7 @@ knitr::include_graphics("lebron-james-lebron.gif")
 Decidimos trazer uma curiosidade em relação ao mundo do basquete e da NBA, que se trata das faculdades que mais ingressaram alunos na NBA e o numero de jogadores não matriculados em faculdades.
 
 
-A parte mais curiosa dessa pesquisa é o fato de que LeBron James nunca engressou em nenhuma faculdade em sua vida dedicando-se apenas ao basquete, o que nos mostra que não necessario uma faculdade para ter sucesso na carreira do basquete apenas trabalho duro e dedicação.
+A parte mais curiosa dessa pesquisa é o fato de que LeBron James nunca ingressou em nenhuma faculdade em sua vida dedicando-se apenas ao basquete, o que nos mostra que não necessario uma faculdade para ter sucesso na carreira do basquete apenas trabalho duro e dedicação.
 
 ```{r}
 
@@ -451,3 +450,4 @@ ggplot(dados, aes(x = reorder(faculdades, -quant_jogadores), y = quant_jogadores
 
 
 ```
+
