@@ -17,6 +17,7 @@ output:
 </style>
 ```
 <B>Autores: </B> Davi Augusto e João Arend.
+<B>Autores: </B> Davi Augusto e João Arend.
 
 <hr>
 
@@ -142,6 +143,7 @@ knitr::kable(head(top_scorers[order(-top_scorers$total_pts), col_dt],
 
 ```
 
+# Tabela Maiores Pontuadores por jogo
 # Tabela Maiores Pontuadores por jogo
 
 Tabela dos jogadores com maior razão de pontos por jogo:
@@ -395,3 +397,4 @@ ggplot(dados, aes(x = reorder(colleges, -quant_jogadores), y = quant_jogadores,f
   labs(x = "College", y = "Quantidade de Jogadores", title = "Quantidade de Jogadores por College") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
+
